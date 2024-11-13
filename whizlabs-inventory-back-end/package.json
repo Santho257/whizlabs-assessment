@@ -1,0 +1,20 @@
+{
+  "name": "whizlabs-inventory-back-end",
+  "version": "1.0.0",
+  "description": "Inventory management system backend for whizlab's assignment",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon ./src/index.js"
+  },
+  "type": "module",
+  "keywords": [
+    "whizlabs",
+    "inventory",
+    "express"
+  ],
+  "author": "Santhoshkumar J V",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}
