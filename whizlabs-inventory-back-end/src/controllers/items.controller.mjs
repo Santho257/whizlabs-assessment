@@ -7,7 +7,7 @@ const validateItem = ({ itemName, quantity, price, description, category }) => {
     if ([itemName, description, category].some(col => !col || col.trim() === "")) throw new ApiError("All fields are required", 400);  //Checks whether any field is empty
 
     if (quantity === undefined || quantity < 0) throw new ApiError("Quantity cannot be negative", 400);
-    if (!price || price < 1) throw new ApiError("Price should be atleast $1"); //Checks Whether quantity or price is below its provided value
+    if (!price || price < 1) throw new ApiError("Price should be atleast $1", 400); //Checks Whether quantity or price is below its provided value
 }
 
 export const getItems = asyncHandler(async (req, res) => {
@@ -17,11 +17,13 @@ export const getItems = asyncHandler(async (req, res) => {
 });
 
 export const addItem = asyncHandler(async (req, res) => {
+    console.log(req.body);
     const { itemName, quantity, price, description, category } = req.body;
 
     try {
         validateItem({ ...req.body });
     } catch (error) {
+        console.log(error)
         throw error;
     }
 
