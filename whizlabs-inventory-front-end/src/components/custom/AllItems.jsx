@@ -32,7 +32,7 @@ const AllItems = () => {
 
     return (
         <>
-            <SimpleGrid columns={4} gap="40px">
+            <SimpleGrid columns={{ lg: 4, mdToLg: 3, smToMd: 2 }} gap="40px">
                 {items.map(item => <Card.Root key={item._id} onClick={() => { handleCardClick(item._id, item.itemName) }} overflow="hidden">
                     <Card.Body gap="2">
                         <Card.Title>{item.itemName}</Card.Title>
