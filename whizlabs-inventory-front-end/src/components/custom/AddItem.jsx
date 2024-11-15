@@ -4,26 +4,35 @@ import { toaster } from "../ui/toaster"
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { BACKEND } from "../../constants";
+import { useParams } from "react-router-dom";
+import GeneralError from "./GeneralError";
 
-const AddItem = ({ id }) => {
+const AddItem = () => {
+    const { id } = useParams();
     const [itemName, setItemName] = useState("");
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState("");
     const [quantity, setQuantity] = useState(0);
     const [price, setPrice] = useState(1);
+    const [errorText, setErrorText] = useState("");
 
     const [errors, setErrors] = useState({});
 
     useEffect(() => {
         if (id) {
             const fetch = async () => {
-                const data = await axios.get(`${BACKEND}/items/${id}`);
-                if (data.data.success) {
-                    setItemName(data.data.data.itemName);
-                    setDescription(data.data.data.description);
-                    setCategory(data.data.data.category);
-                    setPrice(data.data.data.price);
-                    setQuantity(data.data.data.quantity);
+                try {
+                    const data = await axios.get(`${BACKEND}/items/${id}`);
+                    if (data.data.success) {
+                        setItemName(data.data.data.itemName);
+                        setDescription(data.data.data.description);
+                        setCategory(data.data.data.category);
+                        setPrice(data.data.data.price);
+                        setQuantity(data.data.data.quantity);
+                    }
+                }
+                catch (err) {
+                    setErrorText(err.response.data.data || err.response.data.message)
                 }
             }
             fetch();
@@ -108,7 +117,7 @@ const AddItem = ({ id }) => {
     }
 
     return (
-        <>
+        (errorText) ? <GeneralError errorText={errorText} /> : <>
             <Center><Fieldset.Root size={"lg"} maxW={"6xl"}>
                 <Stack>
                     <Center>
@@ -135,7 +144,7 @@ const AddItem = ({ id }) => {
                     </Field>
                 </Fieldset.Content>
                 <Button type="submit" alignSelf="flex-start" onClick={addItem}>
-                    Add Item
+                    {id ? "Edit Item" : "Add Item"}
                 </Button>
             </Fieldset.Root></Center>
         </>

@@ -2,12 +2,18 @@ import { Container } from "@chakra-ui/react";
 import AllItems from "./components/custom/AllItems";
 import AddItem from "./components/custom/AddItem";
 import ItemById from "./components/custom/ItemById";
+import { Route, Routes } from "react-router-dom";
+import Err404 from "./components/custom/Err404";
 const App = () => {
   return (
     <Container>
-      {/* <AllItems />
-      <AddItem id={"67371de9b9c39f2956836357"} /> */}
-      <ItemById id={"67371de9b9c39f2956836357"} />
+      <Routes>
+        <Route path="/" element={<AllItems />} />
+        <Route path="/:id" element={<ItemById />} />
+        <Route path="/add" element={<AddItem />} />
+        <Route path="/edit/:id" element={<AddItem />} />
+        <Route path="/*" element={<Err404 />} />
+      </Routes>
     </Container>
   );
 }

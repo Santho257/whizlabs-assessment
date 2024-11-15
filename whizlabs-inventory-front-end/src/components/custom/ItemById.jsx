@@ -4,8 +4,11 @@ import { deleteItem } from '../../utils/items/deleteItem';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BACKEND } from '../../constants';
+import { useNavigate, useParams } from 'react-router-dom';
+import GeneralError from './GeneralError';
 
-const ItemById = ({ id }) => {
+const ItemById = () => {
+    const { id } = useParams();
     const [item, setItem] = useState({
         itemName: "", description: "", category: "", price: 1, quantity: 0, createdAt: "", updatedAt: ""
     });
@@ -13,20 +16,23 @@ const ItemById = ({ id }) => {
     useEffect(() => {
         const fetch = async () => {
             try {
-                console.log(id);
                 const result = await axios.get(`${BACKEND}/items/${id}`);
                 if (result.data.success) {
                     setItem(result.data.data)
                 }
             } catch (error) {
-                setErrorText(error.response.data.data);
+                setErrorText(error.response.data.data || error.response.data.message);
             }
         }
         fetch();
     }, []);
 
-    const editPage = () => {
-
+    const navi = useNavigate();
+    const goEdit = (id) => {
+        navi(`/edit/${id}`);
+    }
+    const goHome = () => {
+        navi(`/`);
     }
 
     const handleDelete = async id => {
@@ -34,7 +40,7 @@ const ItemById = ({ id }) => {
         console.log(deletedMessage);
     }
     return (
-        (errorText !== "") ? errorText :
+        (errorText !== "") ? <GeneralError errorText={errorText} /> :
             <Center>
                 <Container maxW={"lg"}>
                     <Heading size="6xl" marginBlockEnd={"3rem"}>{item.itemName}</Heading>
@@ -45,7 +51,8 @@ const ItemById = ({ id }) => {
                         <List.Item>Quantity: {item.quantity}</List.Item>
                     </List.Root>
                     <Group marginBlockEnd={"3rem"}>
-                        <Button onClick={editPage}>Edit</Button>
+                        <Button onClick={() => goHome()}>Home</Button>
+                        <Button onClick={() => goEdit(item._id)}>Edit</Button>
                         <Button onClick={async () => { await handleDelete(item._id) }} variant="ghost">Delete</Button>
                     </Group>
                 </Container>

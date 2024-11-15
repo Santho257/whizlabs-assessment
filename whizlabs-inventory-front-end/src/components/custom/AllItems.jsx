@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from 'axios';
 import { BACKEND } from "../../constants";
 import { deleteItem } from "../../utils/items/deleteItem";
+import { useNavigate } from "react-router-dom";
 // import { useNavigate } from "react-router-dom";
 
 const AllItems = () => {
@@ -18,11 +19,12 @@ const AllItems = () => {
         fetch();
     }, [count]);
 
-    const handleCardClick = (id, itemName) => {
-        // navi(`/${id}`);
+    const navi = useNavigate();
+    const handleCardClick = (id) => {
+        navi(`/${id}`);
     }
-    const editPage = id => {
-        //
+    const goEdit = (id) => {
+        navi(`/edit/${id}`);
     }
     const handleDelete = async id => {
         const deletedMessage = await deleteItem(id);
@@ -33,9 +35,9 @@ const AllItems = () => {
     return (
         <>
             <SimpleGrid columns={{ lg: 4, mdToLg: 3, smToMd: 2 }} gap="40px">
-                {items.map(item => <Card.Root key={item._id} onClick={() => { handleCardClick(item._id, item.itemName) }} overflow="hidden">
+                {items.map(item => <Card.Root key={item._id} overflow="hidden">
                     <Card.Body gap="2">
-                        <Card.Title>{item.itemName}</Card.Title>
+                        <Card.Title onClick={() => { handleCardClick(item._id) }} cursor={"pointer"}>{item.itemName}</Card.Title>
                         <Text textStyle="2xl" fontWeight="medium" letterSpacing="tight" mt="2">
                             ${item.price}
                         </Text>
@@ -44,7 +46,7 @@ const AllItems = () => {
                         </Text>
                     </Card.Body>
                     <Card.Footer gap="2">
-                        <Button onClick={editPage} variant="solid">Edit</Button>
+                        <Button onClick={() => goEdit(item._id)} variant="solid">Edit</Button>
                         <Button onClick={async () => { await handleDelete(item._id) }} variant="ghost">Delete</Button>
                     </Card.Footer>
                 </Card.Root>
