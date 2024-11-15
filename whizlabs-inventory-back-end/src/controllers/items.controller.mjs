@@ -17,13 +17,11 @@ export const getItems = asyncHandler(async (req, res) => {
 });
 
 export const addItem = asyncHandler(async (req, res) => {
-    console.log(req.body);
     const { itemName, quantity, price, description, category } = req.body;
 
     try {
         validateItem({ ...req.body });
     } catch (error) {
-        console.log(error)
         throw error;
     }
 
