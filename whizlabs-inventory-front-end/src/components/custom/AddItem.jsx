@@ -1,10 +1,10 @@
-import { Button, Center, Fieldset, Heading, Input, Stack, Textarea, Toast } from "@chakra-ui/react";
+import { Button, Center, Fieldset, Flex, Heading, Input, Stack, Textarea, Toast } from "@chakra-ui/react";
 import { Field } from '../ui/field'
 import { toaster } from "../ui/toaster"
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { BACKEND } from "../../constants";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import GeneralError from "./GeneralError";
 
 const AddItem = () => {
@@ -17,6 +17,8 @@ const AddItem = () => {
     const [errorText, setErrorText] = useState("");
 
     const [errors, setErrors] = useState({});
+
+    const navi = useNavigate();
 
     useEffect(() => {
         if (id) {
@@ -89,24 +91,23 @@ const AddItem = () => {
                     description: description.trim(),
                     category: category.trim(), price, quantity
                 });
-                console.log(result);
                 if (result.data.success) {
+                    toaster.create({
+                        description: result.data.message,
+                        type: "success",
+                    });
+                    if (id) navi("/");
                     setItemName("");
                     setDescription("");
                     setCategory("");
                     setPrice(1);
                     setQuantity(0);
-                    toaster.create({
-                        description: result.data.message,
-                        type: "info",
-                    });
                 }
             }
             catch (err) {
-                console.log(err.response.data.data);
                 toaster.create({
-                    description: err.response.data.data,
-                    type: "danger",
+                    description: err.response.data.data || err.response.data.message,
+                    type: "error",
                 });
                 return;
             }
@@ -120,11 +121,12 @@ const AddItem = () => {
         (errorText) ? <GeneralError errorText={errorText} /> : <>
             <Center><Fieldset.Root size={"lg"} maxW={"6xl"}>
                 <Stack>
-                    <Center>
-                        <Fieldset.Legend>
+                    <Fieldset.Legend>
+                        <Flex justify={"space-between"} align={"center"}>
                             <Heading size="4xl">{id ? "Edit Item" : "Add Item"}</Heading>
-                        </Fieldset.Legend>
-                    </Center>
+                            <Button size={"lg"} onClick={() => navi("/")}>Home</Button>
+                        </Flex>
+                    </Fieldset.Legend>
                 </Stack>
                 <Fieldset.Content>
                     <Field label="ItemName" invalid={errors.itemName && true} errorText={errors.itemName}>

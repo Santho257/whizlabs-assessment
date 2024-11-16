@@ -36,8 +36,20 @@ const ItemById = () => {
     }
 
     const handleDelete = async id => {
-        const deletedMessage = await deleteItem(id);
-        console.log(deletedMessage);
+        try {
+            const deletedMessage = await deleteItem(id);
+            toaster.create({
+                description: deletedMessage,
+                type: "success"
+            })
+            setCount(count + 1);
+        } catch (error) {
+            toaster.create({
+                description: error.response.data.data || error.response.data.message,
+                type: "error"
+            })
+        }
+
     }
     return (
         (errorText !== "") ? <GeneralError errorText={errorText} /> :
